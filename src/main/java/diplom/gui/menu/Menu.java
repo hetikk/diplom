@@ -31,15 +31,20 @@ public class Menu extends JMenuBar {
 
             switch (text) {
                 case CLASSES_NEW:
-                    new CreateClassesGroup(frame);
+                    new CreateClassesGroupDialog(frame);
                     break;
                 case CLASSES_EDIT:
-                    new EditClassesGroup(frame);
+                    new EditClassesGroupDialog(frame);
+                    break;
+                case ABOUT:
+                    new AboutDialog(frame);
+                    break;
+                case EXIT:
+                    System.exit(0);
                     break;
             }
         };
 
-        // Filling menu bar with items
         JMenuBarGenerator generator = new JMenuBarGenerator(this);
         generator.setLanguagePrefix("demo.example.menus.menu");
         generator.setIconSettings(MenusGroup.class, "icons/menu/", "png");
