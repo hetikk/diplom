@@ -16,6 +16,7 @@ import diplom.classification.Class;
 import diplom.classification.Classification;
 import diplom.clustering.Clustering;
 import diplom.distance.Distance;
+import diplom.gui.menu.Menu;
 
 import javax.swing.*;
 import java.awt.*;
@@ -44,7 +45,7 @@ public class Panel extends WebPanel {
         currentDir = new File(System.getProperty("user.dir") + "/sets");
 
         setLayout(null);
-        setBounds(0, 0, frame.getWidth() - Frame.X_OFFSET, frame.getHeight() - Frame.Y_OFFSET);
+        setBounds(0, Menu.MENU_Y_OFFSET, frame.getWidth() - Frame.X_OFFSET, frame.getHeight() - Frame.Y_OFFSET);
 
         WebLabel modeLabel = new WebLabel("Режим работы");
         modeLabel.setBounds(25, 15, 200, 30);

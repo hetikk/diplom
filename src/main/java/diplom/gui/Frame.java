@@ -3,6 +3,7 @@ package diplom.gui;
 
 import com.alee.laf.WebLookAndFeel;
 import com.alee.laf.window.WebFrame;
+import diplom.gui.menu.Menu;
 
 import javax.swing.*;
 import java.awt.event.ComponentAdapter;
@@ -19,9 +20,12 @@ public class Frame extends WebFrame {
         setTitle("CGraphic");
         setLayout(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setSize(760, 700);
+        setSize(760, 700 + Menu.MENU_Y_OFFSET);
         setLocationRelativeTo(null);
 //        setExtendedState(MAXIMIZED_BOTH);
+
+        Menu menu = new Menu(this);
+        add(menu);
 
         Panel panel = new Panel(this);
         add(panel);
