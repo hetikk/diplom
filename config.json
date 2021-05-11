@@ -1,0 +1,13 @@
+{
+    "app": {
+        "env": "dev"
+    },
+    "clustering": {
+        "separate_value": 0.9,
+        "similarity_measure": "cos"
+    },
+    "classification": {
+        "separate_value": 0.9,
+        "similarity_measure": "cos"
+    }
+}

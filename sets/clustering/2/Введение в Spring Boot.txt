@@ -1,0 +1,352 @@
+Из-за громоздкой конфигурации зависимостей настройка Spring для корпоративных приложений превратилась в весьма утомительное и подверженное ошибкам занятие. Особенно это относится к приложениям, которые используют также несколько сторонних библиотек
+
+
+Каждый раз, создавая очередное корпоративное Java-приложение на основе Spring, вам необходимо повторять одни и те же рутинные шаги по его настройке:
+
+
+В зависимости от типа создаваемого приложения (Spring MVC, Spring JDBC, Spring ORM и т.д.) импортировать необходимые Spring-модули
+Импортировать библиотеку web-контейнеров (в случае web-приложений)
+Импортировать необходимые сторонние библиотеки (например, Hibernate, Jackson), при этом вы должны искать версии, совместимые с указанной версией Spring
+Конфигурировать компоненты DAO, такие, как: источники данных, управление транзакциями и т.д.
+Конфигурировать компоненты web-слоя, такие, как: диспетчер ресурсов, view resolver
+Определить класс, который загрузит все необходимые конфигурации
+
+1. Представляем Spring Boot
+
+Авторы Spring решили предоставить разработчикам некоторые утилиты, которые автоматизируют процедуру настройки и ускоряют процесс создания и развертывания Spring-приложений, под общим названием Spring Boot
+
+
+Spring Boot — это полезный проект, целью которого является упрощение создания приложений на основе Spring. Он позволяет наиболее простым способом создать web-приложение, требуя от разработчиков минимум усилий по его настройке и написанию кода
+
+
+2. Особенности Spring Boot
+
+Spring Boot обладает большим функционалом, но его наиболее значимыми особенностями являются: управление зависимостями, автоматическая конфигурация и встроенные контейнеры сервлетов
+
+
+2.1. Простота управления зависимостями
+
+Чтобы ускорить процесс управления зависимостями, Spring Boot неявно упаковывает необходимые сторонние зависимости для каждого типа приложения на основе Spring и предоставляет их разработчику посредством так называемых starter-пакетов (spring-boot-starter-web, spring-boot-starter-data-jpa и т.д.)
+
+
+Starter-пакеты представляют собой набор удобных дескрипторов зависимостей, которые можно включить в свое приложение. Это позволит получить универсальное решение для всех, связанных со Spring технологий, избавляя программиста от лишнего поиска примеров кода и загрузки из них требуемых дескрипторов зависимостей (пример таких дескрипторов и стартовых пакетов будет показан ниже)
+
+
+Например, если вы хотите начать использовать Spring Data JPA для доступа к базе данных, просто включите в свой проект зависимость spring-boot-starter-data-jpa и все будет готово (вам не придется искать совместимые драйверы баз данных и библиотеки Hibernate)
+
+
+Если вы хотите создать Spring web-приложение, просто добавьте зависимость spring-boot-starter-web, которая подтянет в проект все библиотеки, необходимые для разработки Spring MVC-приложений, таких как spring-webmvc, jackson-json, validation-api и Tomcat
+
+
+Другими словами, Spring Boot собирает все общие зависимости и определяет их в одном месте, что позволяет разработчикам просто использовать их, вместо того, чтобы изобретать колесо каждый раз, когда они создают новое приложение
+
+
+Следовательно, при использовании Spring Boot, файл pom.xml содержит намного меньше строк, чем при использовании его в Spring-приложениях
+
+
+Обратитесь к документации, чтобы ознакомиться со всеми Spring Boot starter-пакетами
+
+
+2.2. Автоматическая конфигурация
+
+Второй превосходной возможностью Spring Boot является автоматическая конфигурация приложения
+
+
+После выбора подходящего starter-пакета, Spring Boot попытается автоматически настроить Spring-приложение на основе добавленных вами jar-зависимостей
+
+
+Например, если вы добавите Spring-boot-starter-web, Spring Boot автоматически сконфигурирует такие зарегистрированные бины, как DispatcherServlet, ResourceHandlers, MessageSource
+
+
+Если вы используете spring-boot-starter-jdbc, Spring Boot автоматически регистрирует бины DataSource, EntityManagerFactory, TransactionManager и считывает информацию для подключения к базе данных из файла application.properties
+
+
+Если вы не собираетесь использовать базу данных, и не предоставляете никаких подробных сведений о подключении в ручном режиме, Spring Boot автоматически настроит базу в памяти, без какой-либо дополнительной конфигурации с вашей стороны (при наличии H2 или HSQL библиотек)
+
+
+Автоматическая конфигурация может быть полностью переопределена в любой момент с помощью пользовательских настроек
+
+
+2.3. Встроенная поддержка сервера приложений — контейнера сервлетов
+
+Каждое Spring Boot web-приложение включает встроенный web-сервер. Посмотрите на список контейнеров сервлетов, которые поддерживаются "из коробки"
+
+
+Разработчикам теперь не надо беспокоиться о настройке контейнера сервлетов и развертывании приложения на нем. Теперь приложение может запускаться само, как исполняемый jar-файл с использованием встроенного сервера
+
+
+Если вам нужно использовать отдельный HTTP-сервер, для этого достаточно исключить зависимости по умолчанию. Spring Boot предоставляет отдельные starter-пакеты для разных HTTP-серверов
+
+
+Создание автономных web-приложений со встроенными серверами не только удобно для разработки, но и является допустимым решением для приложений корпоративного уровня и становится все более полезно в мире микросервисов. Возможность быстро упаковать весь сервис (например, аутентификацию пользователя) в автономном и полностью развертываемом артефакте, который также предоставляет API — делает установку и развертывание приложения значительно проще
+
+
+3. Требования к установке Spring Boot
+
+Для настройки и запуска Spring Boot приложений требуется следующее:
+
+
+Java 8+
+Apache Maven 3.x
+
+4. Создание Spring Boot приложения
+
+Теперь давайте перейдем к практике и реализуем очень простой REST API для приема платежей, используя возможности Spring Boot
+
+
+4.1. Создание web-проекта с использованием Maven
+
+Создайте Maven-проект в используемой вами IDE, назвав его SpringBootRestService
+
+
+Обязательно используйте версию Java 8+, поскольку Spring Boot не работает с более ранними версиями
+
+
+4.2. Конфигурация pom.xml
+
+Вторым шагом необходимо настроить Spring Boot в файле pom.xml
+
+
+Все приложения Spring Boot конфигурируются от spring-boot-starter-parent, поэтому перед дальнейшим определением зависимостей, добавьте starter-parent следующим образом:
+
+
+<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.1.1.RELEASE</version>
+</parent>
+
+Т.к. мы создаем REST API, то необходимо в качестве зависимости использовать spring-boot-starter-web, которая неявно определяет все остальные зависимости, такие как spring-core, spring-web, spring-webmvc, servlet api, и библиотеку jackson-databind, поэтому просто добавьте в pom.xml следующее:
+
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+</dependency>
+
+Теперь следующие jar-библиотеки автоматически импортируются в ваш проект:
+
+
+image
+
+
+Следующий шаг — добавляем Spring Boot плагин:
+
+
+<build>
+    <plugins>
+        <plugin>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-maven-plugin</artifactId>
+        </plugin>
+    </plugins>
+</build>
+
+Последний шаг — сделать так, чтобы Maven генерировал исполняемый jar-файл при сборке:
+
+
+<packaging>jar</packaging>
+
+Ниже приведен полный файл pom.xml:
+
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>springboot.topjava.ru</groupId>
+    <artifactId>SpringBootRestService</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.1.1.RELEASE</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
+
+Как видите, используя одну зависимость, мы можем создать полностью функциональное web-приложение
+
+
+4.3. Создание ресурсов REST
+
+Теперь мы собираемся создать контроллер платежей вместе с POJO-классами для запросов и ответов
+
+
+Напишем класс запроса платежа:
+
+
+package springboot.topjava.ru;
+
+public class PaymentRequest {
+
+    private int userId;
+    private String itemId;
+    private double discount;
+
+    public String getItemId() {
+        return itemId;
+    }
+
+    public void setItemId(String itemId) {
+        this.itemId = itemId;
+    }
+
+    public double getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+}
+
+А также класс, обрабатывающий базовый ответ, возвращаемый нашим сервисом:
+
+
+package springboot.topjava.ru;
+
+public class BaseResponse {
+
+    private final String status;
+    private final Integer code;
+
+    public BaseResponse(String status, Integer code) {
+        this.status = status;
+        this.code = code;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public Integer getCode() {
+        return code;
+    }
+}
+
+А теперь создадим контроллер:
+
+
+package springboot.topjava.ru;
+
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/payment")
+public class PaymentController {
+
+    private final String sharedKey = "SHARED_KEY";
+
+    private static final String SUCCESS_STATUS = "success";
+    private static final String ERROR_STATUS = "error";
+    private static final int CODE_SUCCESS = 100;
+    private static final int AUTH_FAILURE = 102;
+
+    @GetMapping
+    public BaseResponse showStatus() {
+        return new BaseResponse(SUCCESS_STATUS, 1);
+    }
+
+    @PostMapping("/pay")
+    public BaseResponse pay(@RequestParam(value = "key") String key, @RequestBody PaymentRequest request) {
+
+        final BaseResponse response;
+
+        if (sharedKey.equalsIgnoreCase(key)) {
+            int userId = request.getUserId();
+            String itemId = request.getItemId();
+            double discount = request.getDiscount();
+            // Process the request
+            // ....
+            // Return success response to the client.
+            response = new BaseResponse(SUCCESS_STATUS, CODE_SUCCESS);
+        } else {
+            response = new BaseResponse(ERROR_STATUS, AUTH_FAILURE);
+        }
+        return response;
+    }
+}
+
+4.4. Создание основного класса приложения
+
+Этот последний шаг заключается в создании класса конфигурации и запуска приложения. Spring Boot поддерживает новую аннотацию @SpringBootApplication, которая эквивалентна использованию @Configuration, @EnableAutoConfiguration и @ComponentScan с их атрибутами по умолчанию
+
+
+Таким образом, вам просто нужно создать класс, аннотированный с помощью @SpringBootApplication, а Spring Boot включит автоматическую настройку и отсканирует ваши ресурсы в текущем пакете:
+
+
+package springboot.topjava.ru;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class Application {
+
+    public static void main(String[] args) {
+        SpringApplication.run(Application.class, args);
+    }
+}
+
+5. Развертывание приложения Spring Boot
+
+Теперь давайте воспользуемся третьей замечательной особенностью Spring Boot — это встроенный сервер. Все, что нам нужно сделать — это создать исполняемый jar-файл с помощью Maven и запустить его, как обычное автономное приложение:
+
+
+Войдите в режим командной строки (команда cmd), перейдите в папку с pom.xml и введите команду mvn clean package
+Maven cгенерирует исполняемый jar-файл с именем SpringBootRestService-1.0.jar
+Перейдите в папку cd target
+Затем запустите jar-файл: java -jar SpringBootRestService-1.0.jar
+Перейдите в браузере по адресу http://localhost:8080/payment
+
+Наш REST API запущен и готов обслуживать запросы через порт 8080 (по умолчанию)
+
+
+В этой статье мы рассмотрели возможности Spring Boot и создали полностью рабочий пример с использованием встроенного сервера
+
+
+Источник:
+https://dzone.com/articles/introducing-spring-boot
+
+
+В переводе обновили информацию:
+
+Spring-boot-starter-parent изменили версию с 1.5.8.RELEASE на 2.1.1.RELEASE и соответственно был обновлен список библиотек, которые подтягивает Maven
+Убрали объявления репозиториев Spring, зависимости подтягиваются из центрального репозитория
+В классе BaseResponse поля сделали final, добавили конструктор и убрали сеттеры
+В контроллере PaymentController ввели метод showStatus() с @GetMapping для тестирования приложения в браузере
+Заменили @RequestMapping в методах на @GetMapping/@PostMapping
+Также были внесены правки по развертыванию приложения с командной строки

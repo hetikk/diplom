@@ -1,0 +1,5 @@
+.idea
+target
+~$*
+sets/classification/results/*
+sets/clustering/results/*
