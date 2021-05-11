@@ -1,5 +1,6 @@
 package diplom.gui;
 
+import com.alee.extended.filechooser.WebDirectoryChooser;
 import com.alee.laf.button.WebButton;
 import com.alee.laf.combobox.WebComboBox;
 import com.alee.laf.label.WebLabel;
@@ -9,6 +10,7 @@ import com.alee.laf.separator.WebSeparator;
 import com.alee.laf.text.WebTextArea;
 import com.alee.laf.window.WebFrame;
 import com.alee.managers.style.StyleId;
+import com.alee.utils.filefilter.FilesFilter;
 import diplom.Application;
 import diplom.classification.Class;
 import diplom.classification.Classification;
@@ -18,6 +20,8 @@ import diplom.distance.Distance;
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -32,12 +36,12 @@ public class Panel extends WebPanel {
 
     private WebTextArea textArea;
 
-    private File[] docs;
+    private static final List<String> FILE_EXTENSION = Arrays.asList(".txt", ".docx");
     private File classes;
+    private File dir;
 
     public Panel(WebFrame frame) {
-//        currentDir = new File(System.getProperty("user.home"));
-        currentDir = new File("C:\\Users\\hetikk\\IdeaProjects\\diplom\\sets\\classification");
+        currentDir = new File(System.getProperty("user.dir") + "/sets");
 
         setLayout(null);
         setBounds(0, 0, frame.getWidth() - Frame.X_OFFSET, frame.getHeight() - Frame.Y_OFFSET);
@@ -66,12 +70,19 @@ public class Panel extends WebPanel {
         docsChooser.setFocusPainted(false);
         docsChooser.setCursor(new Cursor(Cursor.HAND_CURSOR));
         docsChooser.addActionListener(e -> {
-            JFileChooser chooser = new JFileChooser();
-            chooser.setMultiSelectionEnabled(true);
-            chooser.setCurrentDirectory(currentDir);
-            int result = chooser.showOpenDialog(frame);
+            WebDirectoryChooser chooser = new WebDirectoryChooser(frame, "Выберите папку");
+            chooser.setFilter(new FilesFilter() {
+                @Override
+                public boolean accept(File file) {
+                    return file.isDirectory();
+                }
+            });
+
+            chooser.setSelectedDirectory(currentDir);
+            final int result = chooser.showDialog();
             if (result == JFileChooser.APPROVE_OPTION) {
-                docs = chooser.getSelectedFiles();
+                dir = chooser.getSelectedDirectory();
+                System.out.println("chooser: " + Arrays.toString(dir.list()));
             }
         });
         add(docsChooser);
@@ -114,7 +125,7 @@ public class Panel extends WebPanel {
         run.setCursor(new Cursor(Cursor.HAND_CURSOR));
         run.addActionListener(e -> {
             try {
-                if (docs == null || docs.length == 0) {
+                if (dir == null) {
                     JOptionPane.showMessageDialog(
                             frame,
                             "Вы не выбрали файлы для обработки",
@@ -161,16 +172,34 @@ public class Panel extends WebPanel {
         Distance distance = Distance.distance(Application.config.clustering.similarityMeasure);
         Map<String, List<String>> result;
 
+        File[] filteredFiles = getFilteredFiles(dir);
+
         if (mode == 0) {
             Clustering clustering = new Clustering(Application.config.clustering.separateValue, distance);
-            result = clustering.cluster(docs);
+            result = clustering.cluster(filteredFiles);
             textArea.setText(clustering.getBuilder());
         } else {
             List<Class> classes = diplom.classification.Classification.parseClasses(this.classes);
             diplom.classification.Classification classification = new Classification(classes, distance);
-            result = classification.classify(docs);
+            result = classification.classify(filteredFiles);
             textArea.setText(classification.getBuilder());
         }
+    }
+
+    private File[] getFilteredFiles(File dir) {
+        List<File> files = new ArrayList<>();
+        File[] listFiles = dir.listFiles();
+        if (listFiles != null && listFiles.length > 0) {
+            for (File file : listFiles) {
+                for (String ext : FILE_EXTENSION) {
+                    if (file.getName().endsWith(ext)) {
+                        files.add(file);
+                    }
+                }
+            }
+        }
+//        System.out.print("filtered files: " + files);
+        return files.toArray(new File[0]);
     }
 
 }
