@@ -17,7 +17,7 @@ import java.util.Optional;
 public class Copy {
 
     public static final String SEPARATOR = File.separator;
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss");
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH-mm-ss.S");
 
     public static void group(String baseDir, File[] files, Map<String, List<String>> groups) throws IOException {
         group(baseDir, files, groups, false);
