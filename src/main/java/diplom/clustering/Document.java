@@ -1,11 +1,10 @@
 package diplom.clustering;
 
 import diplom.nlp.FilteredUnigram;
+import diplom.utils.Reader;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -23,7 +22,7 @@ public class Document {
         this.termWithMaxFrequency = 0;
 
         try {
-            String text = String.join(" ", Files.readAllLines(Paths.get(doc.toURI())));
+            String text = Reader.readFile(doc);
             this.terms = FilteredUnigram.get(text);
             vocabulary.addAll(terms);
         } catch (IOException e) {

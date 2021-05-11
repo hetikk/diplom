@@ -1,4 +1,4 @@
-package diplom;
+package diplom.utils;
 
 import diplom.nlp.FilteredUnigram;
 

@@ -2,9 +2,9 @@ package diplom.classification;
 
 import com.google.gson.reflect.TypeToken;
 import diplom.Application;
-import diplom.Copy;
 import diplom.distance.Distance;
 import diplom.nlp.FilteredUnigram;
+import diplom.utils.Copy;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -17,15 +17,13 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static diplom.Copy.SEPARATOR;
+import static diplom.utils.Copy.SEPARATOR;
 
 public class Classification {
 
     private static final String OTHER_CLASS_NAME = "Прочее (!)";
     private Distance distance;
     private Map<String, double[]> dataMap;
-    //    private List<double[]> tempData;
-    private double[][] data;
     private List<String> vocabulary;
     private int CLASSES_END;
     private StringBuilder builder;

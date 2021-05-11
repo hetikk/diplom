@@ -1,7 +1,7 @@
 package diplom.clustering;
 
-import diplom.Copy;
 import diplom.distance.Distance;
+import diplom.utils.Copy;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static diplom.Copy.SEPARATOR;
+import static diplom.utils.Copy.SEPARATOR;
 
 public class Clustering {
 
