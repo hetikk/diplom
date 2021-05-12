@@ -28,9 +28,6 @@ public class GroupRow extends WebPanel {
         this.index--;
         height = startHeight;
 
-        System.out.println(idx);
-        System.out.println(classRows.size());
-
         classRows.get(idx).hi();
         classRows.remove(idx);
 
