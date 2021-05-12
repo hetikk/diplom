@@ -19,8 +19,10 @@ public class GroupRow extends WebPanel {
     private final int startHeight = 35;
     private final int ROW_OFFSET = 35;
     private int height = 72;
+
     private List<ClassRow> classRows = new ArrayList<>();
     private int index = 0;
+
     private Consumer<Integer> consumer = index -> {
         if (classRows.size() == 1) return;
 
