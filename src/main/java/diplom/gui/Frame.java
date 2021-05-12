@@ -3,6 +3,7 @@ package diplom.gui;
 
 import com.alee.laf.WebLookAndFeel;
 import com.alee.laf.window.WebFrame;
+import diplom.gui.menu.CreateClassesGroupDialog;
 import diplom.gui.menu.Menu;
 
 import javax.swing.*;
@@ -37,6 +38,8 @@ public class Frame extends WebFrame {
         });
 
         setVisible(true);
+
+        new CreateClassesGroupDialog(this);
     }
 
     public static void showForm() {

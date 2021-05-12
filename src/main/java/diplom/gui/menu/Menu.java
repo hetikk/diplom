@@ -20,7 +20,6 @@ public class Menu extends JMenuBar {
     private static final String ABOUT = "О программе";
 
     public Menu(WebFrame frame) {
-//        putClientProperty ( StyleId.STYLE_PROPERTY, getStyleId () );
         setBounds(0, 0, frame.getWidth() - Frame.X_OFFSET, MENU_Y_OFFSET);
 
         ActionListener action = e -> {

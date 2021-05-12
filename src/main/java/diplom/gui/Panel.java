@@ -28,16 +28,13 @@ import java.util.Map;
 
 public class Panel extends WebPanel {
 
+    private static final List<String> FILE_EXTENSION = Arrays.asList(".txt", ".docx");
     private int mode = 0;
-
     private WebLabel classesChooserLabel;
     private WebButton classesChooser;
     private WebSeparator choosersSeparator;
     private File currentDir;
-
     private WebTextArea textArea;
-
-    private static final List<String> FILE_EXTENSION = Arrays.asList(".txt", ".docx");
     private File classes;
     private File dir;
 
@@ -61,7 +58,7 @@ public class Panel extends WebPanel {
         });
         add(mode);
 
-        WebLabel docsChooserLabel = new WebLabel("Выберите файлы для обратотки");
+        WebLabel docsChooserLabel = new WebLabel("Выберите файлы для обработки");
         docsChooserLabel.setBounds(25, 55, 200, 30);
         docsChooserLabel.setFontSize(Frame.FONT_SIZE);
         add(docsChooserLabel);
