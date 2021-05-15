@@ -16,7 +16,7 @@ public class Menu extends JMenuBar {
     public static final int MENU_Y_OFFSET = 25;
 
     private static final String CLASSES_NEW = "Создать";
-    private static final String CLASSES_EDIT = "Изменить";
+    private static final String CLASSES_EDIT = "Редактировать";
     private static final String EXIT = "Выход";
     private static final String ABOUT = "О программе";
     private static final String DEBUG = "Режим отладки";
