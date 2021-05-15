@@ -47,7 +47,8 @@ public class Classification {
                 .collect(Collectors.toList());
 
         System.out.printf("%10s - %s\n", "VOCABULARY", vocabulary);
-        builder.append(String.format("%10s - %s\n", "VOCABULARY", vocabulary));
+        if (Application.debug)
+            builder.append(String.format("%10s - %s\n", "VOCABULARY", vocabulary));
 
         for (Class c : classes) {
             double[] dataRow = new double[vocabulary.size()];
@@ -112,7 +113,11 @@ public class Classification {
         result.put(OTHER_CLASS_NAME, otherFiles);
 
         System.out.println("\nРАСПРЕДЕЛЕННЫЕ ФАЙЛЫ:");
-        builder.append("\nРАСПРЕДЕЛЕННЫЕ ФАЙЛЫ:\n");
+
+        if (Application.debug)
+            builder.append("\nРАСПРЕДЕЛЕННЫЕ ФАЙЛЫ:\n");
+        else
+            builder.append("РАСПРЕДЕЛЕННЫЕ ФАЙЛЫ:\n");
         for (Map.Entry<String, List<String>> entry : result.entrySet()) {
             System.out.printf("%10s - %s\n", entry.getKey(), entry.getValue());
             builder.append(String.format("%10s - %s\n", entry.getKey(), entry.getValue()));
@@ -141,10 +146,12 @@ public class Classification {
         }
 
         System.out.println("\nЧАСТОТЫ:");
-        builder.append("\nЧАСТОТЫ:\n");
+        if (Application.debug)
+            builder.append("\nЧАСТОТЫ:\n");
         for (Map.Entry<String, double[]> e : dataMap.entrySet()) {
             System.out.printf("%10s - %s\n", e.getKey(), Arrays.toString(e.getValue()));
-            builder.append(String.format("%10s - %s\n", e.getKey(), Arrays.toString(e.getValue())));
+            if (Application.debug)
+                builder.append(String.format("%10s - %s\n", e.getKey(), Arrays.toString(e.getValue())));
         }
     }
 
@@ -163,10 +170,12 @@ public class Classification {
         }
 
         System.out.println("\nНОРМАЛИЗОВАННЫЕ ДАННЫЕ:");
-        builder.append("\nНОРМАЛИЗОВАННЫЕ ДАННЫЕ:\n");
+        if (Application.debug)
+            builder.append("\nНОРМАЛИЗОВАННЫЕ ДАННЫЕ:\n");
         for (Map.Entry<String, double[]> e : dataMap.entrySet()) {
             System.out.printf("%10s - %s\n", e.getKey(), Arrays.toString(e.getValue()));
-            builder.append(String.format("%10s - %s\n", e.getKey(), Arrays.toString(e.getValue())));
+            if (Application.debug)
+                builder.append(String.format("%10s - %s\n", e.getKey(), Arrays.toString(e.getValue())));
         }
     }
 

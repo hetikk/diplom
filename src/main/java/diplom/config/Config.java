@@ -16,7 +16,6 @@ import static fi.purkka.jarpa.JarpaArg.string;
 
 public class Config {
 
-    public App app;
     public Clustering clustering;
     public Classification classification;
 
@@ -29,20 +28,10 @@ public class Config {
         String json = FileUtils.readFileToString(configFile, Charset.defaultCharset());
         Config config = Application.gson.fromJson(json, Config.class);
 
-        config.app.validate();
         config.clustering.validate();
         config.classification.validate();
 
         return config;
-    }
-
-    public static class App {
-        public String env;
-
-        void validate() {
-            if (!Arrays.asList("dev", "release").contains(env))
-                throw new InvalidConfigValueException("invalid environment");
-        }
     }
 
     public static class Clustering {

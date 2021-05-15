@@ -5,6 +5,7 @@ import com.alee.laf.window.WebFrame;
 import com.alee.managers.hotkey.Hotkey;
 import com.alee.utils.swing.menu.JMenuBarGenerator;
 import com.alee.utils.swing.menu.MenuGenerator;
+import diplom.Application;
 import diplom.gui.Frame;
 
 import javax.swing.*;
@@ -41,6 +42,9 @@ public class Menu extends JMenuBar {
                     break;
                 case EXIT:
                     System.exit(0);
+                    break;
+                case DEBUG:
+                    Application.debug = item.isSelected();
                     break;
             }
         };

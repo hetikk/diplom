@@ -1,5 +1,6 @@
 package diplom.clustering;
 
+import diplom.Application;
 import diplom.distance.Distance;
 import diplom.utils.Copy;
 
@@ -54,21 +55,26 @@ public class Clustering {
 
         List<Prim.Edge> edges = Prim.solve(similarityMatrix);
 
-        builder.append(docNames).append("\n");
+        if (Application.debug)
+            builder.append(docNames).append("\n");
         System.out.println(docNames + "\n");
 
         for (double[] matrix : similarityMatrix) {
             for (int j = 0; j < similarityMatrix.length; j++) {
                 System.out.printf("%.2f  ", matrix[j]);
-                builder.append(String.format("%.2f  ", matrix[j]));
+                if (Application.debug)
+                    builder.append(String.format("%.2f  ", matrix[j]));
             }
-            builder.append("\n");
+            if (Application.debug)
+                builder.append("\n");
             System.out.println();
         }
 
-        builder.append("\n");
-        edges.forEach(e -> builder.append(e.toString()).append("\n"));
-        builder.append("\n");
+        if (Application.debug) {
+            builder.append("\n");
+            edges.forEach(e -> builder.append(e.toString()).append("\n"));
+            builder.append("\n");
+        }
 
         System.out.println();
         edges.forEach(System.out::println);
