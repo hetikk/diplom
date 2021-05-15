@@ -134,7 +134,7 @@ public class EditClassesGroupDialog extends WebDialog {
         classesPanel.add(newClassBtn);
 
         WebScrollPane scrollPane = new WebScrollPane(StyleId.scrollpaneTransparent, classesPanel);
-        scrollPane.setBounds(10, 35, dialogWidth - 5, dialogHeight - 75);
+        scrollPane.setBounds(10, 45, dialogWidth - 5, dialogHeight - 75);
         scrollPane.getVerticalScrollBar().setUnitIncrement(8);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
