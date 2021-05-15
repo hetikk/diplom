@@ -18,6 +18,7 @@ public class Menu extends JMenuBar {
     private static final String CLASSES_EDIT = "Изменить";
     private static final String EXIT = "Выход";
     private static final String ABOUT = "О программе";
+    private static final String DEBUG = "Режим отладки";
 
     public Menu(WebFrame frame) {
         setBounds(0, 0, frame.getWidth() - Frame.X_OFFSET, MENU_Y_OFFSET);
@@ -53,6 +54,9 @@ public class Menu extends JMenuBar {
         classes.addItem("new", CLASSES_NEW, Hotkey.CTRL_C, action);
         classes.addItem("edit", CLASSES_EDIT, Hotkey.CTRL_E, action);
         fileMenu.addItem("exit", EXIT, Hotkey.ALT_X, action);
+
+        MenuGenerator view = generator.addSubMenu("Вид");
+        view.addCheckItem(DEBUG, Hotkey.CTRL_D, false, action);
 
         MenuGenerator helpMenu = generator.addSubMenu("Справка");
         helpMenu.addItem(ABOUT, Hotkey.CTRL_H, action);

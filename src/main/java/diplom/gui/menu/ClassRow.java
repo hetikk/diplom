@@ -12,7 +12,8 @@ import java.util.function.Consumer;
 
 public class ClassRow extends WebPanel {
 
-    public static final int HEIGHT = 40;
+    private static final int HEIGHT = 40;
+
     private WebTextField word;
     private WebTextField count;
     private int index;

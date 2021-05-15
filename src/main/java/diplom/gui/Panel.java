@@ -33,14 +33,12 @@ public class Panel extends WebPanel {
     private WebLabel classesChooserLabel;
     private WebButton classesChooser;
     private WebSeparator choosersSeparator;
-    private File currentDir;
+
     private WebTextArea textArea;
     private File classes;
     private File dir;
 
     public Panel(WebFrame frame) {
-        currentDir = new File(System.getProperty("user.dir") + "/sets");
-
         setLayout(null);
         setBounds(0, Menu.MENU_Y_OFFSET, frame.getWidth() - Frame.X_OFFSET, frame.getHeight() - Frame.Y_OFFSET);
 
@@ -76,7 +74,7 @@ public class Panel extends WebPanel {
                 }
             });
 
-            chooser.setSelectedDirectory(currentDir);
+            chooser.setSelectedDirectory(Application.currentDir);
             final int result = chooser.showDialog();
             if (result == JFileChooser.APPROVE_OPTION) {
                 dir = chooser.getSelectedDirectory();
@@ -104,7 +102,7 @@ public class Panel extends WebPanel {
         classesChooser.addActionListener(e -> {
             JFileChooser chooser = new JFileChooser();
             chooser.setMultiSelectionEnabled(false);
-            chooser.setCurrentDirectory(currentDir);
+            chooser.setCurrentDirectory(Application.currentDir);
             int result = chooser.showOpenDialog(frame);
             if (result == JFileChooser.APPROVE_OPTION) {
                 classes = chooser.getSelectedFile();
