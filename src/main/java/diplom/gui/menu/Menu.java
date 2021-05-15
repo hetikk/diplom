@@ -20,6 +20,7 @@ public class Menu extends JMenuBar {
     private static final String EXIT = "Выход";
     private static final String ABOUT = "О программе";
     private static final String DEBUG = "Режим отладки";
+    private static final String TIME = "Время работы";
 
     public Menu(WebFrame frame) {
         setBounds(0, 0, frame.getWidth() - Frame.X_OFFSET, MENU_Y_OFFSET);
@@ -46,6 +47,9 @@ public class Menu extends JMenuBar {
                 case DEBUG:
                     Application.debug = item.isSelected();
                     break;
+                case TIME:
+                    Application.time = item.isSelected();
+                    break;
             }
         };
 
@@ -60,6 +64,7 @@ public class Menu extends JMenuBar {
         fileMenu.addItem("exit", EXIT, Hotkey.ALT_X, action);
 
         MenuGenerator view = generator.addSubMenu("Вид");
+        view.addCheckItem(TIME, Hotkey.CTRL_T, false, action);
         view.addCheckItem(DEBUG, Hotkey.CTRL_D, false, action);
 
         MenuGenerator helpMenu = generator.addSubMenu("Справка");

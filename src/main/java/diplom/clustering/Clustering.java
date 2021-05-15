@@ -26,7 +26,12 @@ public class Clustering {
 
     private StringBuilder builder;
 
+    private double initTime;
+    private double workTime;
+
     public Clustering(double separateValue, Distance distance) {
+        initTime = System.nanoTime();
+
         this.separateValue = separateValue;
         this.distance = distance;
         this.builder = new StringBuilder();
@@ -34,9 +39,14 @@ public class Clustering {
         this.vocabulary = new Vocabulary();
         this.docNames = new ArrayList<>();
         this.documents = new ArrayList<>();
+
+        initTime = (System.nanoTime() - initTime) / 1000000;
+        System.out.printf("ВРЕМЯ ИНИЦИАЛИЗАЦИИ (cluster): %.2f мс\n", initTime);
     }
 
     public Map<String, List<String>> cluster(File[] files) throws Exception {
+        workTime = System.nanoTime();
+
         builder.setLength(0);
 
         if (files == null || files.length == 0) {
@@ -116,6 +126,11 @@ public class Clustering {
 
         String dir = "sets" + SEPARATOR + "clustering";
         Copy.group(dir, files, collect, true);
+
+        workTime = (System.nanoTime() - workTime) / 1000000;
+        System.out.printf("ВРЕМЯ РАБОТЫ (cluster): %.2f мс\n", workTime);
+        if (Application.time)
+            builder.append("ВРЕМЯ РАБОТЫ: ").append(String.format("%.2f мс", workTime));
 
         return collect;
     }

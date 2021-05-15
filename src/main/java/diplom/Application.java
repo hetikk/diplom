@@ -12,12 +12,14 @@ public class Application {
     public static Gson gson;
     public static Config config;
     public static File currentDir;
+    public static boolean time;
     public static boolean debug;
 
     public static void main(String[] args) throws Exception {
         gson = new GsonBuilder().setPrettyPrinting().create();
         config = Config.parse(args);
         currentDir = new File(System.getProperty("user.dir") + "/sets");
+        time = false;
         debug = false;
 
         Frame.showForm();

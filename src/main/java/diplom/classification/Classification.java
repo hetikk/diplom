@@ -28,7 +28,12 @@ public class Classification {
     private int CLASSES_END;
     private StringBuilder builder;
 
+    private double initTime;
+    private double workTime;
+
     public Classification(List<Class> classes, Distance distance) {
+        initTime = System.nanoTime();
+
         this.distance = distance;
         this.dataMap = new LinkedHashMap<>();
         this.CLASSES_END = classes.size() + 1;
@@ -65,6 +70,9 @@ public class Classification {
 
         double[] dataRow = new double[vocabulary.size()];
         dataMap.put(OTHER_CLASS_NAME, dataRow);
+
+        initTime = (System.nanoTime() - initTime) / 1000000;
+        System.out.printf("ВРЕМЯ ИНИЦИАЛИЗАЦИИ (classify): %.2f мс\n", initTime);
     }
 
     public static List<Class> parseClasses(File classesFile) throws IOException {
@@ -74,6 +82,8 @@ public class Classification {
     }
 
     public Map<String, List<String>> classify(File[] path) throws IOException {
+        workTime = System.nanoTime();
+
         List<File> rawFiles = Arrays.stream(path).collect(Collectors.toList());
 
         addFilesToMatrix(rawFiles);
@@ -112,8 +122,6 @@ public class Classification {
 
         result.put(OTHER_CLASS_NAME, otherFiles);
 
-        System.out.println("\nРАСПРЕДЕЛЕННЫЕ ФАЙЛЫ:");
-
         if (Application.debug)
             builder.append("\nРАСПРЕДЕЛЕННЫЕ ФАЙЛЫ:\n");
         else
@@ -125,6 +133,11 @@ public class Classification {
 
         String dir = "sets" + SEPARATOR + "classification";
         Copy.group(dir, path, result);
+
+        workTime = (System.nanoTime() - workTime) / 1000000;
+        System.out.printf("ВРЕМЯ РАБОТЫ (classify): %.2f мс\n", workTime);
+        if (Application.time)
+            builder.append("\nВРЕМЯ РАБОТЫ: ").append(String.format("%.2f мс", workTime));
 
         return result;
     }
