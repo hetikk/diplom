@@ -19,18 +19,28 @@ public class ClassRow extends WebPanel {
     private int index;
 
     public ClassRow(int index, Consumer<Integer> consumer) {
+        this(index, consumer, null, null);
+    }
+
+    public ClassRow(int index, Consumer<Integer> consumer, String key, String val) {
         this.index = index;
 
         setLayout(null);
         setSize(CreateClassesGroupDialog.dialogWidth, HEIGHT);
 
         word = new WebTextField();
+        if (key != null) {
+            word.setText(key);
+        }
         word.setBounds(0, 5, 165, 30);
         word.setInputPrompt("Ключевое слово #" + (index + 1));
         word.setPadding(0, 5, 0, 0);
         add(word);
 
         count = new WebTextField();
+        if (val != null) {
+            count.setText(val);
+        }
         count.setInputPrompt("Кол-во повторений");
         count.setBounds(169, 5, 115, 30);
         count.setPadding(0, 5, 0, 0);

@@ -4,15 +4,13 @@ import com.alee.laf.button.WebButton;
 import com.alee.laf.label.WebLabel;
 import com.alee.laf.panel.WebPanel;
 import com.alee.laf.text.WebTextField;
+import com.alee.laf.window.WebDialog;
 import diplom.classification.Class;
 import diplom.gui.Frame;
 import diplom.gui.Utils;
 
 import javax.swing.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class ClassGroup extends WebPanel {
@@ -26,7 +24,7 @@ public class ClassGroup extends WebPanel {
     private int index = 0;
     int rowIndex = 0;
 
-    private CreateClassesGroupDialog dialog;
+    private WebDialog dialog;
     private Consumer<Integer> groupDeleteHandler;
 
     private WebTextField classField;
@@ -51,7 +49,11 @@ public class ClassGroup extends WebPanel {
         setPreferredSize(WIDTH, height);
     };
 
-    public ClassGroup(CreateClassesGroupDialog dialog, int index, Consumer<Integer> groupDeleteHandler) {
+    public ClassGroup(WebDialog dialog, int index, Consumer<Integer> groupDeleteHandler) {
+        this(dialog, index, groupDeleteHandler, null);
+    }
+
+    public ClassGroup(WebDialog dialog, int index, Consumer<Integer> groupDeleteHandler, Class cl) {
         this.index = index;
         this.dialog = dialog;
         this.groupDeleteHandler = groupDeleteHandler;
@@ -67,6 +69,9 @@ public class ClassGroup extends WebPanel {
         add(classLabel);
 
         classField = new WebTextField();
+        if (cl != null) {
+            classField.setText(cl.name);
+        }
         classField.setBounds(120, 5, 200, 30);
         classField.setInputPrompt("Название...");
         classField.setPadding(0, 5, 0, 0);
@@ -74,7 +79,7 @@ public class ClassGroup extends WebPanel {
 
         WebButton add = new WebButton(new ImageIcon(Objects.requireNonNull(Utils.loadImage(ClassGroup.class, "icons/new.png"))));
         add.setBounds(325, 5, 30, 30);
-        add.addActionListener(e -> addRow());
+        add.addActionListener(e -> addRow(null, null));
         add(add);
 
         WebButton remove = new WebButton(new ImageIcon(Objects.requireNonNull(Utils.loadImage(ClassGroup.class, "icons/remove.png"))));
@@ -82,14 +87,27 @@ public class ClassGroup extends WebPanel {
         remove.addActionListener(e -> groupDeleteHandler.accept(this.index));
         add(remove);
 
-        ClassRow row = new ClassRow(rowIndex++, rowDeleteHandler);
-        row.setLocation(0, startHeight);
-        add(row);
-        classRows.add(row);
+        if (cl == null) {
+            ClassRow row = new ClassRow(rowIndex++, rowDeleteHandler);
+            row.setLocation(0, startHeight);
+            add(row);
+            classRows.add(row);
+        } else {
+            List<Map.Entry<String, Integer>> list = new ArrayList<>(cl.termsFrequency.entrySet());
+            ClassRow row = new ClassRow(rowIndex++, rowDeleteHandler, list.get(0).getKey(), list.get(0).getValue() + "");
+            row.setLocation(0, startHeight);
+            add(row);
+            classRows.add(row);
+
+            for (int i = 1; i < list.size(); i++) {
+                addRow(list.get(i).getKey(), list.get(i).getValue() + "");
+            }
+        }
     }
 
-    private void addRow() {
-        ClassRow row = new ClassRow(rowIndex++, rowDeleteHandler);
+    private void addRow(String k, String v) {
+        ClassRow row = new ClassRow(rowIndex++, rowDeleteHandler, k, v);
+
         row.setLocation(0, height);
         add(row);
         classRows.add(row);

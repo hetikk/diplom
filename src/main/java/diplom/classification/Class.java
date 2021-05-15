@@ -11,4 +11,11 @@ public class Class {
     @SerializedName("terms_frequency")
     public Map<String, Integer> termsFrequency;
 
+    @Override
+    public String toString() {
+        return "Class{" +
+                "name='" + name + '\'' +
+                ", termsFrequency=" + termsFrequency +
+                '}';
+    }
 }
