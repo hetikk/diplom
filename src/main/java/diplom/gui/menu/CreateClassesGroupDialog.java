@@ -59,7 +59,7 @@ public class CreateClassesGroupDialog extends WebDialog {
         super(frame, true);
 
         setTitle("Создание группы классов");
-        setSize(dialogWidth, dialogHeight);
+        setSize(dialogWidth, dialogHeight + 20);
         setLocationRelativeTo(frame);
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setLayout(null);
