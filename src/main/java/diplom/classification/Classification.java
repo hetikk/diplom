@@ -5,13 +5,12 @@ import diplom.Application;
 import diplom.distance.Distance;
 import diplom.nlp.FilteredUnigram;
 import diplom.utils.Copy;
+import diplom.utils.Reader;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -128,7 +127,7 @@ public class Classification {
             builder.append("РАСПРЕДЕЛЕННЫЕ ФАЙЛЫ:\n");
         for (Map.Entry<String, List<String>> entry : result.entrySet()) {
             System.out.printf("%10s - %s\n", entry.getKey(), entry.getValue());
-            builder.append(String.format("%10s - %s\n", entry.getKey(), entry.getValue()));
+            builder.append(String.format("%s - %s\n", entry.getKey(), entry.getValue()));
         }
 
         String dir = "sets" + SEPARATOR + "classification";
@@ -144,7 +143,7 @@ public class Classification {
 
     private void addFilesToMatrix(List<File> files) throws IOException {
         for (File f : files) {
-            String text = String.join(" ", Files.readAllLines(Paths.get(f.getAbsolutePath())));
+            String text = Reader.readFile(f);
             List<String> strings = FilteredUnigram.get(text);
 
             double[] dataRow = new double[vocabulary.size()];

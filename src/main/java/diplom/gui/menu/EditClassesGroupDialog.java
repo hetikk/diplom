@@ -90,6 +90,7 @@ public class EditClassesGroupDialog extends WebDialog {
         setSize(dialogWidth, dialogHeight + 20);
         setLocationRelativeTo(frame);
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        setModal(true);
         setLayout(null);
 
         WebLabel groupLabel = new WebLabel("Название группы");
@@ -104,7 +105,7 @@ public class EditClassesGroupDialog extends WebDialog {
         groupField.setPadding(0, 5, 0, 0);
         add(groupField);
 
-        WebButton save = new WebButton(new ImageIcon(Objects.requireNonNull(Utils.loadImage(ClassGroup.class, "icons/new.png"))));
+        WebButton save = new WebButton(new ImageIcon(Objects.requireNonNull(Utils.loadImage(EditClassesGroupDialog.class, "icons/edit.png"))));
         save.setBounds(440, 7, 30, 30);
         File finalSelectedFile = selectedFile;
         save.addActionListener(e -> {

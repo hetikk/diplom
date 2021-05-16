@@ -6,6 +6,8 @@ import diplom.config.Config;
 import diplom.gui.Frame;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 
 public class Application {
 
@@ -15,6 +17,8 @@ public class Application {
     public static boolean time;
     public static boolean debug;
 
+    public static final List<String> supportedFileExtensions = Arrays.asList(".txt", ".docx");
+
     public static void main(String[] args) throws Exception {
         gson = new GsonBuilder().setPrettyPrinting().create();
         config = Config.parse(args);
@@ -23,6 +27,15 @@ public class Application {
         debug = false;
 
         Frame.showForm();
+    }
+
+    public static boolean isSupportableFile(File file) {
+        for (String s : supportedFileExtensions) {
+            if (file.getName().endsWith(s)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

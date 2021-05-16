@@ -1,15 +1,18 @@
 package diplom.gui;
 
 import com.alee.extended.filechooser.WebDirectoryChooser;
+import com.alee.extended.filechooser.WebFileDrop;
 import com.alee.laf.button.WebButton;
-import com.alee.laf.combobox.WebComboBox;
+import com.alee.laf.button.WebToggleButton;
+import com.alee.laf.grouping.GroupPane;
 import com.alee.laf.label.WebLabel;
+import com.alee.laf.menu.WebMenuItem;
+import com.alee.laf.menu.WebPopupMenu;
 import com.alee.laf.panel.WebPanel;
 import com.alee.laf.scroll.WebScrollPane;
 import com.alee.laf.separator.WebSeparator;
 import com.alee.laf.text.WebTextArea;
 import com.alee.laf.window.WebFrame;
-import com.alee.managers.style.StyleId;
 import com.alee.utils.filefilter.FilesFilter;
 import diplom.Application;
 import diplom.classification.Class;
@@ -20,15 +23,18 @@ import diplom.gui.menu.Menu;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class Panel extends WebPanel {
 
-    private static final List<String> FILE_EXTENSION = Arrays.asList(".txt", ".docx");
     private int mode = 0;
     private WebLabel classesChooserLabel;
     private WebButton classesChooser;
@@ -36,7 +42,7 @@ public class Panel extends WebPanel {
 
     private WebTextArea textArea;
     private File classes;
-    private File dir;
+    private File[] selectedFiles;
 
     public Panel(WebFrame frame) {
         setLayout(null);
@@ -47,58 +53,34 @@ public class Panel extends WebPanel {
         modeLabel.setFontSize(Frame.FONT_SIZE);
         add(modeLabel);
 
-        WebComboBox mode = new WebComboBox(StyleId.combobox, new String[]{"Кластеризация", "Классификация"});
-        mode.setBounds(225, 15, 125, 30);
-        mode.addActionListener(e -> {
-            Panel.this.mode = mode.getSelectedIndex();
-            System.out.println(Panel.this.mode);
-            changeMode();
-        });
-        add(mode);
-
-        WebLabel docsChooserLabel = new WebLabel("Выберите файлы для обработки");
-        docsChooserLabel.setBounds(25, 55, 200, 30);
-        docsChooserLabel.setFontSize(Frame.FONT_SIZE);
-        add(docsChooserLabel);
-
-        WebButton docsChooser = new WebButton("Выбрать");
-        docsChooser.setBounds(225, 55, 125, 30);
-        docsChooser.setFocusPainted(false);
-        docsChooser.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        docsChooser.addActionListener(e -> {
-            WebDirectoryChooser chooser = new WebDirectoryChooser(frame, "Выберите папку");
-            chooser.setFilter(new FilesFilter() {
-                @Override
-                public boolean accept(File file) {
-                    return file.isDirectory();
-                }
-            });
-
-            chooser.setSelectedDirectory(Application.currentDir);
-            final int result = chooser.showDialog();
-            if (result == JFileChooser.APPROVE_OPTION) {
-                dir = chooser.getSelectedDirectory();
-                System.out.println("chooser: " + Arrays.toString(dir.list()));
+        WebToggleButton cluster = new WebToggleButton("Кластеризация", true);
+        cluster.setPreferredSize(100, 30);
+        cluster.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                mode = 0;
+                classesChooser.setVisible(false);
+                classes = null;
             }
         });
-        add(docsChooser);
 
-        choosersSeparator = new WebSeparator(WebSeparator.VERTICAL);
-        choosersSeparator.setBounds(getWidth() / 2, 55, 1, 30);
-        choosersSeparator.setVisible(false);
-        add(choosersSeparator);
+        WebToggleButton classify = new WebToggleButton("Классификация", false);
+        classify.setPreferredSize(100, 30);
+        classify.addItemListener(e -> {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                mode = 1;
+                classesChooser.setText("Выберите файл c классами");
+                classesChooser.setVisible(true);
+            }
+        });
 
-        classesChooserLabel = new WebLabel("Выберите файл c классами");
-        classesChooserLabel.setBounds(getWidth() / 2 + 25, 55, 200, 30);
-        classesChooserLabel.setFontSize(Frame.FONT_SIZE);
-        classesChooserLabel.setVisible(false);
-        add(classesChooserLabel);
+        GroupPane togglePane = new GroupPane(cluster, classify);
+        togglePane.setBounds(120, 15, 200, 30);
+        add(togglePane);
 
-        classesChooser = new WebButton("Выбрать");
-        classesChooser.setBounds(getWidth() / 2 + 25 + 170, 55, 125, 30);
+        classesChooser = new WebButton("Выберите файл c классами");
+        classesChooser.setBounds(330, 15, 150, 30);
         classesChooser.setFocusPainted(false);
         classesChooser.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        classesChooser.setVisible(false);
         classesChooser.addActionListener(e -> {
             JFileChooser chooser = new JFileChooser();
             chooser.setMultiSelectionEnabled(false);
@@ -106,22 +88,20 @@ public class Panel extends WebPanel {
             int result = chooser.showOpenDialog(frame);
             if (result == JFileChooser.APPROVE_OPTION) {
                 classes = chooser.getSelectedFile();
+                classesChooser.setText(classes.getName());
             }
         });
+        classesChooser.setVisible(false);
         add(classesChooser);
 
-        WebSeparator separator1 = new WebSeparator(WebSeparator.HORIZONTAL);
-        separator1.setBounds(25, 105, getWidth() - 25, 1);
-        add(separator1);
-
-        WebButton run = new WebButton("Начать");
-        run.setSize(100, 30);
-        run.setLocation(getWidth() / 2 - run.getWidth() / 2, 120);
+        WebButton run = new WebButton(new ImageIcon(Objects.requireNonNull(Utils.loadImage(Panel.class, "icons/start.jpg"))));
+        run.setSize(30, 30);
+        run.setLocation(getWidth() - 25 - 30, 15);
         run.setFocusPainted(false);
         run.setCursor(new Cursor(Cursor.HAND_CURSOR));
         run.addActionListener(e -> {
             try {
-                if (dir == null) {
+                if (selectedFiles == null || selectedFiles.length == 0) {
                     JOptionPane.showMessageDialog(
                             frame,
                             "Вы не выбрали файлы для обработки",
@@ -148,13 +128,67 @@ public class Panel extends WebPanel {
         });
         add(run);
 
+        WebFileDrop fileDrop = new WebFileDrop();
+        fileDrop.setFont(new Font("Dialog", Font.PLAIN, 12));
+        fileDrop.setDropText("Перетащите сюда файлы для обратотки или кликните для выбора всей папки");
+        fileDrop.setMargin(0);
+        fileDrop.setFileFilter(new FilesFilter() {
+            @Override
+            public boolean accept(File file) {
+                return Application.isSupportableFile(file);
+            }
+        });
+        fileDrop.addFileSelectionListener(files -> {
+            selectedFiles = files.toArray(new File[0]);
+        });
+        fileDrop.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (SwingUtilities.isRightMouseButton(e)) {
+                    WebPopupMenu popup = new WebPopupMenu();
+
+                    WebMenuItem clear = new WebMenuItem("Очистить");
+                    clear.setEnabled(true);
+                    clear.addActionListener(event -> {
+                        fileDrop.removeAllSelectedFiles();
+                        selectedFiles = null;
+                    });
+                    popup.add(clear);
+
+                    popup.show(fileDrop, e.getPoint().x, e.getPoint().y);
+                }
+                if (SwingUtilities.isLeftMouseButton(e)) {
+                    WebDirectoryChooser chooser = new WebDirectoryChooser(frame, "Выберите папку");
+                    chooser.setFilter(new FilesFilter() {
+                        @Override
+                        public boolean accept(File file) {
+                            return file.isDirectory();
+                        }
+                    });
+
+                    chooser.setSelectedDirectory(Application.currentDir);
+                    final int result = chooser.showDialog();
+                    if (result == JFileChooser.APPROVE_OPTION) {
+                        File dir = chooser.getSelectedDirectory();
+                        selectedFiles = dir.listFiles();
+                        System.out.println("chooser: " + Arrays.toString(dir.list()));
+                        fileDrop.setSelectedFiles(Arrays.stream(Objects.requireNonNull(selectedFiles)).collect(Collectors.toList()));
+                    }
+                }
+            }
+        });
+        fileDrop.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        WebScrollPane filesDropScroll = new WebScrollPane(fileDrop);
+        filesDropScroll.setBounds(25, 55, getWidth() - 50, 150);
+        add(filesDropScroll);
+
         WebSeparator separator2 = new WebSeparator(WebSeparator.HORIZONTAL);
         separator2.setBounds(25, 170, getWidth() - 25, 1);
         add(separator2);
 
         textArea = new WebTextArea(getStyleId(), 3, 20);
         WebScrollPane scrollPane = new WebScrollPane(textArea);
-        scrollPane.setBounds(25, 200, getWidth() - 50, 440);
+        scrollPane.setBounds(25, 220, getWidth() - 50, 420);
         add(scrollPane);
     }
 
@@ -168,34 +202,16 @@ public class Panel extends WebPanel {
         Distance distance = Distance.distance(Application.config.clustering.similarityMeasure);
         Map<String, List<String>> result;
 
-        File[] filteredFiles = getFilteredFiles(dir);
-
         if (mode == 0) {
             Clustering clustering = new Clustering(Application.config.clustering.separateValue, distance);
-            result = clustering.cluster(filteredFiles);
+            result = clustering.cluster(selectedFiles);
             textArea.setText(clustering.getBuilder());
         } else {
             List<Class> classes = diplom.classification.Classification.parseClasses(this.classes);
             diplom.classification.Classification classification = new Classification(classes, distance);
-            result = classification.classify(filteredFiles);
+            result = classification.classify(selectedFiles);
             textArea.setText(classification.getBuilder());
         }
-    }
-
-    private File[] getFilteredFiles(File dir) {
-        List<File> files = new ArrayList<>();
-        File[] listFiles = dir.listFiles();
-        if (listFiles != null && listFiles.length > 0) {
-            for (File file : listFiles) {
-                for (String ext : FILE_EXTENSION) {
-                    if (file.getName().endsWith(ext)) {
-                        files.add(file);
-                    }
-                }
-            }
-        }
-//        System.out.print("filtered files: " + files);
-        return files.toArray(new File[0]);
     }
 
 }
