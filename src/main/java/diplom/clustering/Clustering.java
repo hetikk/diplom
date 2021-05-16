@@ -119,7 +119,8 @@ public class Clustering {
 
         int i = 1;
         for (Map.Entry<String, List<String>> entry : collect.entrySet()) {
-            builder.append(String.format("Группа №%d: %s\n", i++, entry.getKey()));
+//            builder.append(String.format("Группа №%d: %s\n", i++, entry.getKey()));
+            builder.append(String.format("Группа №%d:\n", i++));
             builder.append(String.format("Файлы: %s\n\n", entry.getValue()));
 //            builder.append(String.format("Файлы, принадлежащие группе №%d:\n%s\n\n", i++, entry.getValue()));
         }

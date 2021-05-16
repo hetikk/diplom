@@ -122,9 +122,9 @@ public class Classification {
         result.put(OTHER_CLASS_NAME, otherFiles);
 
         if (Application.debug)
-            builder.append("\nРАСПРЕДЕЛЕННЫЕ ФАЙЛЫ:\n");
+            builder.append("\nКЛАССИФИЦИРОВАННЫЕ ФАЙЛЫ:\n");
         else
-            builder.append("РАСПРЕДЕЛЕННЫЕ ФАЙЛЫ:\n");
+            builder.append("КЛАССИФИЦИРОВАННЫЕ ФАЙЛЫ:\n");
         for (Map.Entry<String, List<String>> entry : result.entrySet()) {
             System.out.printf("%10s - %s\n", entry.getKey(), entry.getValue());
             builder.append(String.format("%s - %s\n", entry.getKey(), entry.getValue()));
