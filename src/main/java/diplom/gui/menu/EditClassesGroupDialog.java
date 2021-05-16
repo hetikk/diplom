@@ -87,7 +87,7 @@ public class EditClassesGroupDialog extends WebDialog {
         }
 
         setTitle("Редактирование группы классов");
-        setSize(dialogWidth, dialogHeight);
+        setSize(dialogWidth, dialogHeight + 20);
         setLocationRelativeTo(frame);
         setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         setLayout(null);
