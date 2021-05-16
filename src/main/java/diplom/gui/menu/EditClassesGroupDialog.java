@@ -119,6 +119,10 @@ public class EditClassesGroupDialog extends WebDialog {
         });
         add(save);
 
+        newClassBtn = new WebButton("Добавить класс");
+        newClassBtn.setBounds(15, 43, 150, 30);
+        add(newClassBtn);
+
         classesPanel = new WebPanel(new VerticalLayout());
 //        classesPanel.setBackground(Color.PINK);
 
@@ -128,14 +132,8 @@ public class EditClassesGroupDialog extends WebDialog {
             classGroups.add(classGroup);
         }
 
-        newClassBtn = new WebButton("Добавить класс");
-//        newClassBtn.setBounds(15, currentY, 150, 30);
-        newClassBtn.setPreferredSize(150, 30);
-
-        classesPanel.add(newClassBtn);
-
         WebScrollPane scrollPane = new WebScrollPane(StyleId.scrollpaneTransparent, classesPanel);
-        scrollPane.setBounds(10, 45, dialogWidth - 5, dialogHeight - 75);
+        scrollPane.setBounds(10, 75, dialogWidth - 5, dialogHeight - 105);
         scrollPane.getVerticalScrollBar().setUnitIncrement(8);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);

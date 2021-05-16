@@ -35,10 +35,6 @@ class VerticalLayout implements LayoutManager {
             }
         }
 
-        Component c = list[ii];
-        list[ii] = list[list.length - 1];
-        list[list.length - 1] = c;
-
         int currentY = topPadding;
         for (Component component : list) {
             // Определение предпочтительного размера компонента
