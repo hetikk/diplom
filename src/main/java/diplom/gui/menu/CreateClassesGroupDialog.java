@@ -67,16 +67,16 @@ public class CreateClassesGroupDialog extends WebDialog {
         WebLabel groupLabel = new WebLabel("Название группы");
         groupLabel.setBounds(15, 5, 120, 30);
         groupLabel.setFontSize(Frame.FONT_SIZE);
-        add(groupLabel);
+//        add(groupLabel);
 
         WebTextField groupField = new WebTextField();
         groupField.setInputPrompt("Название группы...");
         groupField.setBounds(130, 7, 300, 28);
         groupField.setPadding(0, 5, 0, 0);
-        add(groupField);
+//        add(groupField);
 
         WebButton add = new WebButton(new ImageIcon(Objects.requireNonNull(Utils.loadImage(ClassGroup.class, "icons/new.png"))));
-        add.setBounds(440, 7, 30, 30);
+        add.setBounds(175, 7, 30, 30);
         add.addActionListener(e -> {
             WebFileChooser chooser = new WebFileChooser();
             chooser.setCurrentDirectory(Application.currentDir);
@@ -94,7 +94,7 @@ public class CreateClassesGroupDialog extends WebDialog {
         add(add);
 
         newClassBtn = new WebButton("Добавить класс");
-        newClassBtn.setBounds(15, 43, 150, 30);
+        newClassBtn.setBounds(15, 7, 150, 30);
         add(newClassBtn);
 
         classesPanel = new WebPanel(new VerticalLayout());
@@ -105,7 +105,7 @@ public class CreateClassesGroupDialog extends WebDialog {
         classGroups.add(classGroup);
 
         WebScrollPane scrollPane = new WebScrollPane(StyleId.scrollpaneTransparent, classesPanel);
-        scrollPane.setBounds(10, 75, dialogWidth - 5, dialogHeight - 105);
+        scrollPane.setBounds(10, 39, dialogWidth - 5, dialogHeight - 69);
         scrollPane.getVerticalScrollBar().setUnitIncrement(8);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);

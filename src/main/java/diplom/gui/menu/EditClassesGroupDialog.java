@@ -44,12 +44,13 @@ public class EditClassesGroupDialog extends WebDialog {
         if (classGroups.size() == 1) return;
 
         int idx = index;
-        System.out.println(idx);
         ClassGroup classGroup = classGroups.get(idx);
 
         classesPanel.remove(classGroup);
         classesPanel.revalidate();
         classesPanel.repaint();
+
+        classGroups.remove(idx);
 
         for (int i = 0; i < classGroups.size(); i++) {
             classGroups.get(i).setIndex(i);
@@ -69,7 +70,6 @@ public class EditClassesGroupDialog extends WebDialog {
                 String json = FileUtils.readFileToString(selectedFile, Charset.defaultCharset());
                 classes = Application.gson.fromJson(json, new TypeToken<List<Class>>() {
                 }.getType());
-                System.out.println(classes);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -96,17 +96,17 @@ public class EditClassesGroupDialog extends WebDialog {
         WebLabel groupLabel = new WebLabel("Название группы");
         groupLabel.setBounds(15, 5, 120, 30);
         groupLabel.setFontSize(Frame.FONT_SIZE);
-        add(groupLabel);
+//        add(groupLabel);
 
         WebTextField groupField = new WebTextField();
         groupField.setText(selectedFile.getName());
         groupField.setInputPrompt("Название группы...");
         groupField.setBounds(130, 7, 300, 28);
         groupField.setPadding(0, 5, 0, 0);
-        add(groupField);
+//        add(groupField);
 
         WebButton save = new WebButton(new ImageIcon(Objects.requireNonNull(Utils.loadImage(EditClassesGroupDialog.class, "icons/edit.png"))));
-        save.setBounds(440, 7, 30, 30);
+        save.setBounds(175, 7, 30, 30);
         File finalSelectedFile = selectedFile;
         save.addActionListener(e -> {
             String json = Application.gson.toJson(getClasses());
@@ -120,7 +120,7 @@ public class EditClassesGroupDialog extends WebDialog {
         add(save);
 
         newClassBtn = new WebButton("Добавить класс");
-        newClassBtn.setBounds(15, 43, 150, 30);
+        newClassBtn.setBounds(15, 7, 150, 30);
         add(newClassBtn);
 
         classesPanel = new WebPanel(new VerticalLayout());
@@ -133,7 +133,7 @@ public class EditClassesGroupDialog extends WebDialog {
         }
 
         WebScrollPane scrollPane = new WebScrollPane(StyleId.scrollpaneTransparent, classesPanel);
-        scrollPane.setBounds(10, 75, dialogWidth - 5, dialogHeight - 105);
+        scrollPane.setBounds(10, 39, dialogWidth - 5, dialogHeight - 69);
         scrollPane.getVerticalScrollBar().setUnitIncrement(8);
         scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
