@@ -1,6 +1,5 @@
 {
     "app": {
-        "env": "dev"
     },
     "clustering": {
         "separate_value": 0.9,
