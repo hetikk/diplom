@@ -15,6 +15,7 @@ import com.alee.laf.text.WebTextArea;
 import com.alee.laf.window.WebFrame;
 import com.alee.utils.filefilter.FilesFilter;
 import diplom.Application;
+import diplom.ExperimentsInterface;
 import diplom.classification.Class;
 import diplom.classification.Classification;
 import diplom.clustering.Clustering;
@@ -36,9 +37,7 @@ import java.util.stream.Collectors;
 public class Panel extends WebPanel {
 
     private int mode = 0;
-    private WebLabel classesChooserLabel;
     private WebButton classesChooser;
-    private WebSeparator choosersSeparator;
 
     private WebTextArea textArea;
     private File classes;
@@ -122,11 +121,34 @@ public class Panel extends WebPanel {
                 }
 
                 runAlgorithm();
+
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                if (Application.experiments) {
+                    double workTime = 0;
+
+                    for (int i = 1; i <= Application.REPETITION_COUNT - 1; i++) {
+                        System.out.println(i);
+                        try {
+                            workTime += runAlgorithm();
+                        } catch (Exception ex) {
+                            ex.printStackTrace();
+                            System.err.println(i);
+                        }
+                    }
+
+                    workTime /= 100;
+                    System.out.printf("Число повторений: %d; Кол-во файлов: %d; Среднее время: %.2f мс\n",
+                            Application.REPETITION_COUNT, selectedFiles.length, workTime);
+                }
+
+                ////////////////////////////////////////////////////////////////////////////////////////////////////////
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
         });
         add(run);
+
 
         WebFileDrop fileDrop = new WebFileDrop();
         fileDrop.setFont(new Font("Dialog", Font.PLAIN, 12));
@@ -179,6 +201,7 @@ public class Panel extends WebPanel {
         });
         fileDrop.setCursor(new Cursor(Cursor.HAND_CURSOR));
         WebScrollPane filesDropScroll = new WebScrollPane(fileDrop);
+//        filesDropScroll.setLayout();
         filesDropScroll.setBounds(25, 55, getWidth() - 50, 150);
         add(filesDropScroll);
 
@@ -192,26 +215,28 @@ public class Panel extends WebPanel {
         add(scrollPane);
     }
 
-    private void changeMode() {
-        classesChooserLabel.setVisible(mode != 0);
-        classesChooser.setVisible(mode != 0);
-        choosersSeparator.setVisible(mode != 0);
-    }
-
-    private void runAlgorithm() throws Exception {
+    private double runAlgorithm() throws Exception {
         Distance distance = Distance.distance(Application.config.clustering.similarityMeasure);
+        double initTime, workTime;
         Map<String, List<String>> result;
-
+        ExperimentsInterface experiments;
+        File[] clone = selectedFiles.clone();
         if (mode == 0) {
-            Clustering clustering = new Clustering(Application.config.clustering.separateValue, distance);
-            result = clustering.cluster(selectedFiles);
-            textArea.setText(clustering.getBuilder());
+            experiments = new Clustering(Application.config.clustering.separateValue, distance);
+            result = experiments.run(clone);
+            initTime = experiments.getInitTime();
+            workTime = experiments.getWorkTime();
+            textArea.setText(experiments.getBuilder());
         } else {
             List<Class> classes = diplom.classification.Classification.parseClasses(this.classes);
-            diplom.classification.Classification classification = new Classification(classes, distance);
-            result = classification.classify(selectedFiles);
-            textArea.setText(classification.getBuilder());
+            experiments = new Classification(classes, distance);
+            result = experiments.run(clone);
+            initTime = experiments.getInitTime();
+            workTime = experiments.getWorkTime();
+            textArea.setText(experiments.getBuilder());
         }
+
+        return workTime;
     }
 
 }

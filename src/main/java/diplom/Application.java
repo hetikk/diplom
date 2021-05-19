@@ -16,8 +16,9 @@ public class Application {
     public static File currentDir;
     public static boolean time;
     public static boolean debug;
-
-    public static final List<String> supportedFileExtensions = Arrays.asList(".txt", ".docx");
+    public static final int REPETITION_COUNT = 100;
+    public static final List<String> SUPPORTED_FILE_EXTENSIONS = Arrays.asList(".txt", ".docx");
+    public static boolean experiments;
 
     public static void main(String[] args) throws Exception {
         gson = new GsonBuilder().setPrettyPrinting().create();
@@ -25,12 +26,13 @@ public class Application {
         currentDir = new File(System.getProperty("user.dir") + "/sets");
         time = false;
         debug = false;
+        experiments = true;
 
         Frame.showForm();
     }
 
     public static boolean isSupportableFile(File file) {
-        for (String s : supportedFileExtensions) {
+        for (String s : SUPPORTED_FILE_EXTENSIONS) {
             if (file.getName().endsWith(s)) {
                 return true;
             }

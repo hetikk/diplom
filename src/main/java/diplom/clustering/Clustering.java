@@ -1,6 +1,7 @@
 package diplom.clustering;
 
 import diplom.Application;
+import diplom.ExperimentsInterface;
 import diplom.distance.Distance;
 import diplom.utils.Copy;
 
@@ -13,7 +14,7 @@ import java.util.stream.Collectors;
 
 import static diplom.utils.Copy.SEPARATOR;
 
-public class Clustering {
+public class Clustering implements ExperimentsInterface {
 
     private double separateValue;
     private Distance distance;
@@ -44,7 +45,7 @@ public class Clustering {
         System.out.printf("ВРЕМЯ ИНИЦИАЛИЗАЦИИ (cluster): %.2f мс\n", initTime);
     }
 
-    public Map<String, List<String>> cluster(File[] files) throws Exception {
+    public Map<String, List<String>> run(File[] files) throws Exception {
         workTime = System.nanoTime();
 
         builder.setLength(0);
@@ -202,4 +203,11 @@ public class Clustering {
                 .collect(Collectors.joining(", "));
     }
 
+    public double getInitTime() {
+        return initTime;
+    }
+
+    public double getWorkTime() {
+        return workTime;
+    }
 }

@@ -2,6 +2,7 @@ package diplom.classification;
 
 import com.google.gson.reflect.TypeToken;
 import diplom.Application;
+import diplom.ExperimentsInterface;
 import diplom.distance.Distance;
 import diplom.nlp.FilteredUnigram;
 import diplom.utils.Copy;
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
 
 import static diplom.utils.Copy.SEPARATOR;
 
-public class Classification {
+public class Classification implements ExperimentsInterface {
 
     private static final String OTHER_CLASS_NAME = "Прочее (!)";
     private Distance distance;
@@ -80,7 +81,7 @@ public class Classification {
         }.getType());
     }
 
-    public Map<String, List<String>> classify(File[] path) throws IOException {
+    public Map<String, List<String>> run(File[] path) throws IOException {
         workTime = System.nanoTime();
 
         List<File> rawFiles = Arrays.stream(path).collect(Collectors.toList());
@@ -194,4 +195,13 @@ public class Classification {
     public String getBuilder() {
         return builder.toString();
     }
+
+    public double getInitTime() {
+        return initTime;
+    }
+
+    public double getWorkTime() {
+        return workTime;
+    }
+
 }
