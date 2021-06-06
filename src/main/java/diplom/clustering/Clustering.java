@@ -1,19 +1,17 @@
 package diplom.clustering;
 
 import diplom.Application;
+import diplom.ExperimentsInterface;
 import diplom.distance.Distance;
 import diplom.utils.Copy;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static diplom.utils.Copy.SEPARATOR;
 
-public class Clustering {
+public class Clustering implements ExperimentsInterface {
 
     private double separateValue;
     private Distance distance;
@@ -44,7 +42,7 @@ public class Clustering {
         System.out.printf("ВРЕМЯ ИНИЦИАЛИЗАЦИИ (cluster): %.2f мс\n", initTime);
     }
 
-    public Map<String, List<String>> cluster(File[] files) throws Exception {
+    public Map<String, List<String>> run(File[] files) throws Exception {
         workTime = System.nanoTime();
 
         builder.setLength(0);
@@ -62,6 +60,8 @@ public class Clustering {
         documents.forEach(Document::calcTermsFrequency);
 
         initSimMatrix();
+
+        //normalize();
 
         List<Prim.Edge> edges = Prim.solve(similarityMatrix);
 
@@ -202,4 +202,38 @@ public class Clustering {
                 .collect(Collectors.joining(", "));
     }
 
+    public double getInitTime() {
+        return initTime;
+    }
+
+    public double getWorkTime() {
+        return workTime;
+    }
+
+    private void normalize() {
+        for (int i = 0; i < similarityMatrix.length; i++) {
+            double min = Arrays.stream(similarityMatrix[i]).min().getAsDouble();
+            double max = Arrays.stream(similarityMatrix[i]).max().getAsDouble();
+
+            for (int j = 0; j < similarityMatrix[i].length; j++) {
+                similarityMatrix[i][j] = (similarityMatrix[i][j] - min) / (max - min);
+                if (Double.isNaN(similarityMatrix[i][j])) {
+                    similarityMatrix[i][j] = 0;
+                }
+            }
+        }
+
+        System.out.println("НОРМАЛИЗОВАННЫЕ ДАННЫЕ:");
+        if (Application.debug)
+            builder.append("НОРМАЛИЗОВАННЫЕ ДАННЫЕ:\n");
+        for (double[] matrix : similarityMatrix) {
+            System.out.printf("%s\n", Arrays.toString(matrix));
+            if (Application.debug)
+                builder.append(String.format("%s\n", Arrays.toString(matrix)));
+        }
+
+        System.out.println();
+        if (Application.debug)
+            builder.append("\n");
+    }
 }
