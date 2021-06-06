@@ -26,7 +26,7 @@ public class Application {
         currentDir = new File(System.getProperty("user.dir") + "/sets");
         time = false;
         debug = false;
-        experiments = true;
+        experiments = false;
 
         Frame.showForm();
     }

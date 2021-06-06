@@ -12,7 +12,10 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Tests {
 
@@ -34,8 +37,10 @@ public class Tests {
 
 //        final int[] wc = new int[]{5_000, 10_000, 15_000, 20_000, 25_000, 30_000};
 //        final int[] fc = new int[]{5, 10, 15, 20};
+//        final int[] fc = new int[]{5, 10, 15, 20};
+        List<Integer> collect = Stream.iterate(1, n -> n + 1).limit(20).collect(Collectors.toList());
 //
-//        List<String> list = readDictionary();
+        List<String> list = readDictionary();
 //
 //        // При фикс числе доков меняю число слов
 //        for (int wci : wc) {
@@ -48,14 +53,14 @@ public class Tests {
 //        }
 //
 //        // При фикс числе слов меняю колво доков
-//        for (int fci : fc) {
-//            String dir = "C:\\Users\\hetikk\\IdeaProjects\\diplom\\sets\\clustering\\6\\6.2\\" + fci + "\\";
-//            for (int i = 0; i < fci; i++) {
-//                Collections.shuffle(list);
-//                String s = list.stream().limit(15_000).collect(Collectors.joining(" "));
-//                FileUtils.write(new File(dir + fci + "." + (i + 1) + ".txt"), s, Charset.defaultCharset());
-//            }
-//        }
+        for (int fci : collect) {
+            String dir = "C:\\Users\\hetikk\\IdeaProjects\\diplom\\sets\\clustering\\6\\6.4\\" + fci + "\\";
+            for (int i = 0; i < fci; i++) {
+                Collections.shuffle(list);
+                String s = list.stream().limit(15_000).collect(Collectors.joining(" "));
+                FileUtils.write(new File(dir + fci + "." + (i + 1) + ".txt"), s, Charset.defaultCharset());
+            }
+        }
     }
 
     static void createDictionary() throws IOException {
