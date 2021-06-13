@@ -56,29 +56,36 @@ public class Clustering implements ExperimentsInterface {
             docNames.add(file.getName());
         }
 
+        System.out.println("vocabulary: " + vocabulary);
+        if (Application.debug)
+            builder.append("vocabulary: ").append(vocabulary);
+
         this.similarityMatrix = new double[files.length][files.length];
         documents.forEach(Document::calcTermsFrequency);
 
         initSimMatrix();
 
-        //normalize();
-
-        List<Prim.Edge> edges = Prim.solve(similarityMatrix);
-
         if (Application.debug)
             builder.append(docNames).append("\n");
         System.out.println(docNames + "\n");
 
+        System.out.println("\nМАТРИЦА СХОЖЕСТИ ДОКУМЕНТОВ:");
+        if (Application.debug)
+            builder.append("\nМАТРИЦА СХОЖЕСТИ ДОКУМЕНТОВ:\n");
+
         for (double[] matrix : similarityMatrix) {
-            for (int j = 0; j < similarityMatrix.length; j++) {
-                System.out.printf("%.2f  ", matrix[j]);
-                if (Application.debug)
-                    builder.append(String.format("%.2f  ", matrix[j]));
-            }
+            System.out.printf("%s\n", Arrays.toString(matrix));
             if (Application.debug)
-                builder.append("\n");
-            System.out.println();
+                builder.append(String.format("%s\n", Arrays.toString(matrix)));
         }
+
+        System.out.println();
+        if (Application.debug)
+            builder.append("\n");
+
+        normalize();
+
+        List<Prim.Edge> edges = Prim.solve(similarityMatrix);
 
         if (Application.debug) {
             builder.append("\n");
@@ -151,7 +158,7 @@ public class Clustering implements ExperimentsInterface {
     private void initSimMatrix() {
         for (int i = 0; i < documents.size(); i++) {
             for (int j = 0; j < documents.size(); j++) {
-                similarityMatrix[i][j] = 1 - distance.calc(tfidf(documents.get(i)), tfidf(documents.get(j)));
+                similarityMatrix[i][j] = distance.calc(tfidf(documents.get(i)), tfidf(documents.get(j)));
             }
         }
     }
