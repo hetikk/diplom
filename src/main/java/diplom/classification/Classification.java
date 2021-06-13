@@ -90,6 +90,10 @@ public class Classification implements ExperimentsInterface {
 
         normalize();
 
+        System.out.println();
+        if (Application.debug)
+            builder.append("\n");
+        System.out.println(CLASSES_END);
         Map<String, List<String>> result = new TreeMap<>();
         List<String> otherFiles = new ArrayList<>();
         dataMap.entrySet().stream().skip(CLASSES_END).forEach(fileRow -> {
@@ -152,7 +156,7 @@ public class Classification implements ExperimentsInterface {
                     .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()))
                     .entrySet()) {
                 int index = vocabulary.indexOf(term.getKey());
-                if (index > 0) // на случай, если в словаре нет такого термина
+                if (index >= 0) // на случай, если в словаре нет такого термина
                     dataRow[index] = term.getValue();
             }
             dataMap.put(f.getName(), dataRow);
