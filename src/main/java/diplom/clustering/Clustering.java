@@ -158,7 +158,7 @@ public class Clustering implements ExperimentsInterface {
     private void initSimMatrix() {
         for (int i = 0; i < documents.size(); i++) {
             for (int j = 0; j < documents.size(); j++) {
-                similarityMatrix[i][j] = distance.calc(tfidf(documents.get(i)), tfidf(documents.get(j)));
+                similarityMatrix[i][j] = 1 - distance.calc(tfidf(documents.get(i)), tfidf(documents.get(j)));
             }
         }
     }

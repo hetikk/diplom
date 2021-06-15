@@ -2,8 +2,8 @@
     "app": {
     },
     "clustering": {
-        "separate_value": 0.8,
-        "similarity_measure": "euclid"
+        "separate_value": 0.9,
+        "similarity_measure": "cos"
     },
     "classification": {
         "similarity_measure": "cos"
