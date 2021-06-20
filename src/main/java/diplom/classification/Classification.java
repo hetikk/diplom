@@ -99,18 +99,18 @@ public class Classification implements ExperimentsInterface {
         List<String> otherFiles = new ArrayList<>();
         dataMap.entrySet().stream().skip(CLASSES_END).forEach(fileRow -> {
             AtomicReference<String> className = new AtomicReference<>("");
-            AtomicReference<Double> dist = new AtomicReference<>(0.0);
+            AtomicReference<Double> dist = new AtomicReference<>(1.0);
 //            AtomicReference<Double> dist = new AtomicReference<>(Application.config.classification.separateValue);
             AtomicReference<String> fileName = new AtomicReference<>("");
             AtomicBoolean classFind = new AtomicBoolean(false);
 
             dataMap.entrySet().stream().limit(CLASSES_END - 1).forEach(classRow -> {
-                double d = distance.calc(fileRow.getValue(), classRow.getValue());
+                double d = 1 - distance.calc(fileRow.getValue(), classRow.getValue());
 
-                String sim = String.format("doc=%-15s class=%-15s  : %.4f", fileRow.getKey(), classRow.getKey(), 1 - d);
+                String sim = String.format("doc=%-40s class=%-15s  : %.4f", fileRow.getKey(), classRow.getKey(), d);
                 System.out.println(sim);
 
-                if (d > dist.get()) {
+                if (d < dist.get() && d < Application.config.classification.separateValue) {
                     className.set(classRow.getKey());
                     dist.set(d);
                     fileName.set(fileRow.getKey());
