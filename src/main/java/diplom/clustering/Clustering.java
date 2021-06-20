@@ -101,7 +101,7 @@ public class Clustering implements ExperimentsInterface {
         clusters.add(new ArrayList<>(Collections.singletonList(edges.get(0).s)));
 
         for (Prim.Edge edge : edges) {
-            if (edge.weigh >= separateValue) {
+            if (edge.weigh > separateValue) {
                 clusters.add(new ArrayList<>(Collections.singletonList(edge.t)));
             } else {
                 int clusterID = relevantCluster(clusters, edge);

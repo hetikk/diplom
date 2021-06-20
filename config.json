@@ -6,6 +6,7 @@
         "similarity_measure": "cos"
     },
     "classification": {
+        "separate_value": 0.3,
         "similarity_measure": "cos"
     }
 }

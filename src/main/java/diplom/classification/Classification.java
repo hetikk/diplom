@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -90,27 +91,34 @@ public class Classification implements ExperimentsInterface {
 
         normalize();
 
-        System.out.println();
+        System.out.println("\nРАССТОЯНИЕ МЕЖДУ ДОКУМЕНТАМИ И КЛАССАМИ:");
         if (Application.debug)
             builder.append("\n");
-        System.out.println(CLASSES_END);
+
         Map<String, List<String>> result = new TreeMap<>();
         List<String> otherFiles = new ArrayList<>();
         dataMap.entrySet().stream().skip(CLASSES_END).forEach(fileRow -> {
             AtomicReference<String> className = new AtomicReference<>("");
-            AtomicReference<Double> dist = new AtomicReference<>((double) 0);
+            AtomicReference<Double> dist = new AtomicReference<>(0.0);
+//            AtomicReference<Double> dist = new AtomicReference<>(Application.config.classification.separateValue);
             AtomicReference<String> fileName = new AtomicReference<>("");
+            AtomicBoolean classFind = new AtomicBoolean(false);
 
-            dataMap.entrySet().stream().limit(CLASSES_END).forEach(classRow -> {
+            dataMap.entrySet().stream().limit(CLASSES_END - 1).forEach(classRow -> {
                 double d = distance.calc(fileRow.getValue(), classRow.getValue());
+
+                String sim = String.format("doc=%-15s class=%-15s  : %.4f", fileRow.getKey(), classRow.getKey(), 1 - d);
+                System.out.println(sim);
+
                 if (d > dist.get()) {
                     className.set(classRow.getKey());
                     dist.set(d);
                     fileName.set(fileRow.getKey());
+                    classFind.set(true);
                 }
             });
 
-            if (dist.get() == 0) {
+            if (!classFind.get()) {
                 otherFiles.add(fileRow.getKey());
             } else {
                 String cName = className.get();
@@ -128,8 +136,8 @@ public class Classification implements ExperimentsInterface {
 
         if (Application.debug)
             builder.append("\nКЛАССИФИЦИРОВАННЫЕ ФАЙЛЫ:\n");
-        else
-            builder.append("КЛАССИФИЦИРОВАННЫЕ ФАЙЛЫ:\n");
+
+        System.out.println("\nКЛАССИФИЦИРОВАННЫЕ ФАЙЛЫ:");
         for (Map.Entry<String, List<String>> entry : result.entrySet()) {
             System.out.printf("%10s - %s\n", entry.getKey(), entry.getValue());
             builder.append(String.format("%s - %s\n", entry.getKey(), entry.getValue()));
