@@ -216,22 +216,21 @@ public class Panel extends WebPanel {
     }
 
     private double runAlgorithm() throws Exception {
-        Distance distance = Distance.distance(Application.config.clustering.similarityMeasure);
-        double initTime, workTime;
+        double workTime;
         Map<String, List<String>> result;
         ExperimentsInterface experiments;
         File[] clone = selectedFiles.clone();
         if (mode == 0) {
+            Distance distance = Distance.distance(Application.config.clustering.similarityMeasure);
             experiments = new Clustering(Application.config.clustering.separateValue, distance);
             result = experiments.run(clone);
-            initTime = experiments.getInitTime();
             workTime = experiments.getWorkTime();
             textArea.setText(experiments.getBuilder());
         } else {
+            Distance distance = Distance.distance(Application.config.classification.similarityMeasure);
             List<Class> classes = diplom.classification.Classification.parseClasses(this.classes);
             experiments = new Classification(classes, distance);
             result = experiments.run(clone);
-            initTime = experiments.getInitTime();
             workTime = experiments.getWorkTime();
             textArea.setText(experiments.getBuilder());
         }

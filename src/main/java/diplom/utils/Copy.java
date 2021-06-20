@@ -26,7 +26,7 @@ public class Copy {
     public static void group(String baseDir, File[] files, Map<String, List<String>> groups, boolean replace) throws IOException {
         LocalDateTime currentDateTime = LocalDateTime.now();
         baseDir += SEPARATOR + "results" + SEPARATOR + currentDateTime.format(FORMATTER);
-        System.out.printf("base dir: %s\n", baseDir);
+        System.out.printf("\nbase dir: %s\n", baseDir);
 
         Files.createDirectories(Paths.get(baseDir));
 

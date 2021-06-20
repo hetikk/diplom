@@ -42,7 +42,7 @@ public class Config {
         public String similarityMeasure;
 
         void validate() {
-            if (separateValue < 0.1 || 1.0 < separateValue)
+            if (separateValue < 0.0 || 1.0 < separateValue)
                 throw new InvalidConfigValueException("invalid separate value");
 
             if (!Arrays.asList("cos", "euclid").contains(similarityMeasure))
@@ -58,9 +58,6 @@ public class Config {
         public String similarityMeasure;
 
         void validate() {
-            if (separateValue < 0.1 || 1.0 < separateValue)
-                throw new InvalidConfigValueException("invalid separate value");
-
             if (!Arrays.asList("cos", "euclid").contains(similarityMeasure))
                 throw new InvalidConfigValueException("invalid similarity measure");
         }

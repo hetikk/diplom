@@ -2,11 +2,11 @@
     "app": {
     },
     "clustering": {
-        "separate_value": 0.9,
+        "separate_value": 0.86,
         "similarity_measure": "cos"
     },
     "classification": {
-        "separate_value": 0.9,
+        "separate_value": 1,
         "similarity_measure": "cos"
     }
 }

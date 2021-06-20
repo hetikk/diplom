@@ -56,29 +56,36 @@ public class Clustering implements ExperimentsInterface {
             docNames.add(file.getName());
         }
 
+        System.out.println("vocabulary: " + vocabulary);
+        if (Application.debug)
+            builder.append("vocabulary: ").append(vocabulary);
+
         this.similarityMatrix = new double[files.length][files.length];
         documents.forEach(Document::calcTermsFrequency);
 
         initSimMatrix();
 
-        //normalize();
-
-        List<Prim.Edge> edges = Prim.solve(similarityMatrix);
-
         if (Application.debug)
             builder.append(docNames).append("\n");
         System.out.println(docNames + "\n");
 
+        System.out.println("\nМАТРИЦА СХОЖЕСТИ ДОКУМЕНТОВ:");
+        if (Application.debug)
+            builder.append("\nМАТРИЦА СХОЖЕСТИ ДОКУМЕНТОВ:\n");
+
         for (double[] matrix : similarityMatrix) {
-            for (int j = 0; j < similarityMatrix.length; j++) {
-                System.out.printf("%.2f  ", matrix[j]);
-                if (Application.debug)
-                    builder.append(String.format("%.2f  ", matrix[j]));
-            }
+            System.out.printf("%s\n", Arrays.toString(matrix));
             if (Application.debug)
-                builder.append("\n");
-            System.out.println();
+                builder.append(String.format("%s\n", Arrays.toString(matrix)));
         }
+
+        System.out.println();
+        if (Application.debug)
+            builder.append("\n");
+
+        normalize();
+
+        List<Prim.Edge> edges = Prim.solve(similarityMatrix);
 
         if (Application.debug) {
             builder.append("\n");
@@ -94,7 +101,7 @@ public class Clustering implements ExperimentsInterface {
         clusters.add(new ArrayList<>(Collections.singletonList(edges.get(0).s)));
 
         for (Prim.Edge edge : edges) {
-            if (edge.weigh >= separateValue) {
+            if (edge.weigh > separateValue) {
                 clusters.add(new ArrayList<>(Collections.singletonList(edge.t)));
             } else {
                 int clusterID = relevantCluster(clusters, edge);
