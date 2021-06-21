@@ -18,6 +18,7 @@ public class Menu extends JMenuBar {
     private static final String CLASSES_NEW = "Создать";
     private static final String CLASSES_EDIT = "Редактировать";
     private static final String EXIT = "Выход";
+    private static final String KOEF = "Коэффициенты";
     private static final String ABOUT = "О программе";
     private static final String DEBUG = "Режим отладки";
     private static final String TIME = "Время работы";
@@ -50,6 +51,9 @@ public class Menu extends JMenuBar {
                 case TIME:
                     Application.time = item.isSelected();
                     break;
+                case KOEF:
+                    new KoefDialog(frame);
+                    break;
             }
         };
 
@@ -61,6 +65,7 @@ public class Menu extends JMenuBar {
         MenuGenerator classes = fileMenu.addSubMenu("Группа классов");
         classes.addItem("new", CLASSES_NEW, Hotkey.CTRL_C, action);
         classes.addItem("edit", CLASSES_EDIT, Hotkey.CTRL_E, action);
+        fileMenu.addItem(KOEF, action);
         fileMenu.addItem("exit", EXIT, Hotkey.ALT_X, action);
 
         MenuGenerator view = generator.addSubMenu("Вид");

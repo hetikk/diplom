@@ -2,7 +2,7 @@
     "app": {
     },
     "clustering": {
-        "separate_value": 0.86,
+        "separate_value": 0.917092,
         "similarity_measure": "cos"
     },
     "classification": {

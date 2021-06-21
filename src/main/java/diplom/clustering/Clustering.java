@@ -87,14 +87,24 @@ public class Clustering implements ExperimentsInterface {
 
         List<Prim.Edge> edges = Prim.solve(similarityMatrix);
 
+        List<Double> edgesWeigh = edges.stream().mapToDouble(e -> e.weigh).boxed().sorted().collect(Collectors.toList());
+        System.err.println(edgesWeigh);
+        int parts = 4;
+        int newSepValIdx = Math.max(edgesWeigh.size() / parts * (parts - 1) + 1, 0);
+        double newSepVal = edgesWeigh.get(newSepValIdx);
+        //Application.config.clustering.separateValue = newSepVal;
+        System.err.println(newSepVal);
+
         if (Application.debug) {
             builder.append("\n");
+//            edges.forEach(e -> builder.append(String.format("%-15s - %-15s : %.4f", docNames.get(e.s - 1), docNames.get(e.t - 1), e.weigh)));
             edges.forEach(e -> builder.append(e.toString()).append("\n"));
             builder.append("\n");
         }
 
         System.out.println();
         edges.forEach(System.out::println);
+        edges.forEach(e -> System.out.printf("%-60s - %-60s : %.4f\n", docNames.get(e.s), docNames.get(e.t), e.weigh));
         System.out.println();
 
         List<List<Integer>> clusters = new ArrayList<>();

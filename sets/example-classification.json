@@ -1,0 +1,29 @@
+[
+    {
+        "name": "Базы данный",
+        "terms_frequency": {
+            "БД": 3,
+            "СУБД": 3,
+            "SQL": 3,
+            "PostgreSQL": 3,
+            "Транзакции": 2,
+            "Данные": 1
+        }
+    },
+    {
+        "name": "Java",
+        "terms_frequency": {
+            "Java": 3,
+            "JDK": 3,
+            "Thymeleaf": 1,
+            "JPA": 1,
+            "Spring Boot": 2
+        }
+    },
+    {
+        "name": "Видеокарты",
+        "terms_frequency": {
+            "": 3
+        }
+    }
+]

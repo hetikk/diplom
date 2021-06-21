@@ -100,7 +100,6 @@ public class Classification implements ExperimentsInterface {
         dataMap.entrySet().stream().skip(CLASSES_END).forEach(fileRow -> {
             AtomicReference<String> className = new AtomicReference<>("");
             AtomicReference<Double> dist = new AtomicReference<>(1.0);
-//            AtomicReference<Double> dist = new AtomicReference<>(Application.config.classification.separateValue);
             AtomicReference<String> fileName = new AtomicReference<>("");
             AtomicBoolean classFind = new AtomicBoolean(false);
 
@@ -134,13 +133,20 @@ public class Classification implements ExperimentsInterface {
 
         result.put(OTHER_CLASS_NAME, otherFiles);
 
+        Set<String> classes = dataMap.entrySet().stream().limit(CLASSES_END - 1).map(Map.Entry::getKey).collect(Collectors.toSet());
+        classes.removeAll(result.keySet());
+        for (String s : classes) {
+            result.put(s, new ArrayList<>());
+        }
+
         if (Application.debug)
             builder.append("\nКЛАССИФИЦИРОВАННЫЕ ФАЙЛЫ:\n");
 
         System.out.println("\nКЛАССИФИЦИРОВАННЫЕ ФАЙЛЫ:");
         for (Map.Entry<String, List<String>> entry : result.entrySet()) {
-            System.out.printf("%10s - %s\n", entry.getKey(), entry.getValue());
-            builder.append(String.format("%s - %s\n", entry.getKey(), entry.getValue()));
+            String format = String.format("%s:\n%s\n\n", entry.getKey(), String.join("\n", entry.getValue()));
+            System.out.println(format);
+            builder.append(format);
         }
 
         String dir = "sets" + SEPARATOR + "classification";
